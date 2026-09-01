@@ -1,0 +1,24 @@
+import "./ModelRol.js";
+import "./ModelTipoDocumento.js";
+import "./ModelEstadoUsuario.js";
+import "./ModelUsuario.js";
+import "./ModelPais.js";
+import "./ModelEditorial.js";
+import "./ModelIdioma.js";
+import "./ModelLibro.js";
+import "./ModelAutor.js";
+import "./ModelLibroAutor.js";
+import "./ModelCategoria.js";
+import "./ModelLibroCategoria.js";
+import "./ModelEstadoEjemplar.js";
+import "./ModelEjemplar.js";
+import "./ModelEstadoPrestamo.js";
+import "./ModelPrestamo.js";
+import "./ModelEstadoReserva.js";
+import "./ModelReserva.js";
+import "./ModelEstadoMulta.js";
+import "./ModelMulta.js";
+import "./ModelTipoNotificacion.js";
+import "./ModelNotificacion.js";
+
+import "./relaciones.js";

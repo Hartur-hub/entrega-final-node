@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
-import conn from "../config/database.js";
+import {conn} from "../config/database.js";
 
-export const Usuario = conn.define("Usuario", {
+export const ModelUsuario = conn.define("Usuario", {
     id_usuario: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -45,6 +45,6 @@ export const Usuario = conn.define("Usuario", {
         allowNull: false
     }
 }, {
-    tableName: Usuarios,
+    tableName: "Usuarios",
     timestamps: true
 })

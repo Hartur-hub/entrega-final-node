@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
-import conn from "../config/database.js";
+import {conn} from "../config/database.js";
 
-export const Rol = conn.define("Rol", {
+export const ModelRol = conn.define("Rol", {
     id_rol: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -16,6 +16,6 @@ export const Rol = conn.define("Rol", {
         allowNull: false
     }
 }, {
-    tableName: Roles,
+    tableName: "Roles",
     timestamps: true
 })
