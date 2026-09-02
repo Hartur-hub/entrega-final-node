@@ -20,3 +20,17 @@ jobs:
         run: npm run lint
       - name: Verificar que el servidor arranca sin errores
         run: node --check index.js
+
+      - name: Notificar éxito a Telegram
+        if: success()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d text="✅ PR #${{ github.event.pull_request.number }} pasó todas las validaciones en ${{ github.repository }}"
+
+      - name: Notificar error a Telegram
+        if: failure()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d text="❌ PR #${{ github.event.pull_request.number }} tiene errores en ${{ github.repository }}. Revisa: ${{ github.event.pull_request.html_url }}"
