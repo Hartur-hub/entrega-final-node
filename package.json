@@ -16,5 +16,10 @@
     "mysql2": "^3.24.2",
     "nodemon": "^3.1.14",
     "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.9.1",
+    "globals": "^17.12.0"
   }
 }
