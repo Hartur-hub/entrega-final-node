@@ -1,85 +1,46 @@
 import ModelCategoria from '../models/ModelCategoria.js';
 
-// Obtener todas las categorías
-export const getAll = async (req, res) => {
-  try {
-    const categorias = await ModelCategoria.findAll();
-    res.status(200).json(categorias);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error al obtener las categorías',
-      error: error.message
-    });
-  }
+export const obtenerTodos = (peticion, respuesta) => {
+  ModelCategoria.findAll()
+    .then((categorias) => respuesta.status(200).json(categorias))
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al obtener las categorías', error: error.message }));
 };
 
-// Obtener una categoría por su ID
-export const getById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const categoria = await ModelCategoria.findByPk(id);
-
-    if (!categoria) {
-      return res.status(404).json({ message: 'Categoría no encontrada' });
-    }
-
-    res.status(200).json(categoria);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error al buscar la categoría',
-      error: error.message
-    });
-  }
+export const obtenerPorId = (peticion, respuesta) => {
+  const { id } = peticion.params;
+  ModelCategoria.findByPk(id)
+    .then((categoria) => {
+      if (!categoria) return respuesta.status(404).json({ mensaje: 'Categoría no encontrada' });
+      respuesta.status(200).json(categoria);
+    })
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al buscar la categoría', error: error.message }));
 };
 
-// Crear una nueva categoría
-export const create = async (req, res) => {
-  try {
-    const nuevaCategoria = await ModelCategoria.create(req.body);
-    res.status(201).json(nuevaCategoria);
-  } catch (error) {
-    res.status(400).json({
-      message: 'Error al crear la categoría',
-      error: error.message
-    });
-  }
+export const crear = (peticion, respuesta) => {
+  ModelCategoria.create(peticion.body)
+    .then((nuevaCategoria) => respuesta.status(201).json(nuevaCategoria))
+    .catch((error) => respuesta.status(400).json({ mensaje: 'Error al crear la categoría', error: error.message }));
 };
 
-// Actualizar una categoría
-export const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const [filasAfectadas] = await ModelCategoria.update(req.body, { where: { id } });
-
-    if (filasAfectadas === 0) {
-      return res.status(404).json({ message: 'Categoría no encontrada o sin cambios' });
-    }
-
-    const categoriaActualizada = await ModelCategoria.findByPk(id);
-    res.status(200).json(categoriaActualizada);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error al actualizar la categoría',
-      error: error.message
-    });
-  }
+export const actualizar = (peticion, respuesta) => {
+  const { id } = peticion.params;
+  ModelCategoria.update(peticion.body, { where: { id } })
+    .then(([filasAfectadas]) => {
+      if (filasAfectadas === 0) return respuesta.status(404).json({ mensaje: 'Categoría no encontrada o sin cambios' });
+      return ModelCategoria.findByPk(id);
+    })
+    .then((categoriaActualizada) => {
+      if (categoriaActualizada) respuesta.status(200).json(categoriaActualizada);
+    })
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al actualizar la categoría', error: error.message }));
 };
 
-// Eliminar una categoría
-export const remove = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const filasEliminadas = await ModelCategoria.destroy({ where: { id } });
-
-    if (filasEliminadas === 0) {
-      return res.status(404).json({ message: 'Categoría no encontrada' });
-    }
-
-    res.status(200).json({ message: 'Categoría eliminada correctamente' });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error al eliminar la categoría',
-      error: error.message
-    });
-  }
+export const eliminar = (peticion, respuesta) => {
+  const { id } = peticion.params;
+  ModelCategoria.destroy({ where: { id } })
+    .then((filasEliminadas) => {
+      if (filasEliminadas === 0) return respuesta.status(404).json({ mensaje: 'Categoría no encontrada' });
+      respuesta.status(200).json({ mensaje: 'Categoría eliminada correctamente' });
+    })
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al eliminar la categoría', error: error.message }));
 };

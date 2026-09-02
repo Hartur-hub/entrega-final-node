@@ -1,85 +1,46 @@
 import ModelEjemplar from '../models/ModelEjemplar.js';
 
-// Obtener todos los ejemplares
-export const getAll = async (req, res) => {
-  try {
-    const ejemplares = await ModelEjemplar.findAll();
-    res.status(200).json(ejemplares);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error al obtener los ejemplares',
-      error: error.message
-    });
-  }
+export const obtenerTodos = (peticion, respuesta) => {
+  ModelEjemplar.findAll()
+    .then((ejemplares) => respuesta.status(200).json(ejemplares))
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al obtener los ejemplares', error: error.message }));
 };
 
-// Obtener un ejemplar por su ID
-export const getById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const ejemplar = await ModelEjemplar.findByPk(id);
-
-    if (!ejemplar) {
-      return res.status(404).json({ message: 'Ejemplar no encontrado' });
-    }
-
-    res.status(200).json(ejemplar);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error al buscar el ejemplar',
-      error: error.message
-    });
-  }
+export const obtenerPorId = (peticion, respuesta) => {
+  const { id } = peticion.params;
+  ModelEjemplar.findByPk(id)
+    .then((ejemplar) => {
+      if (!ejemplar) return respuesta.status(404).json({ mensaje: 'Ejemplar no encontrado' });
+      respuesta.status(200).json(ejemplar);
+    })
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al buscar el ejemplar', error: error.message }));
 };
 
-// Crear un nuevo ejemplar
-export const create = async (req, res) => {
-  try {
-    const nuevoEjemplar = await ModelEjemplar.create(req.body);
-    res.status(201).json(nuevoEjemplar);
-  } catch (error) {
-    res.status(400).json({
-      message: 'Error al crear el ejemplar',
-      error: error.message
-    });
-  }
+export const crear = (peticion, respuesta) => {
+  ModelEjemplar.create(peticion.body)
+    .then((nuevoEjemplar) => respuesta.status(201).json(nuevoEjemplar))
+    .catch((error) => respuesta.status(400).json({ mensaje: 'Error al crear el ejemplar', error: error.message }));
 };
 
-// Actualizar un ejemplar
-export const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const [filasAfectadas] = await ModelEjemplar.update(req.body, { where: { id } });
-
-    if (filasAfectadas === 0) {
-      return res.status(404).json({ message: 'Ejemplar no encontrado o sin cambios' });
-    }
-
-    const ejemplarActualizado = await ModelEjemplar.findByPk(id);
-    res.status(200).json(ejemplarActualizado);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error al actualizar el ejemplar',
-      error: error.message
-    });
-  }
+export const actualizar = (peticion, respuesta) => {
+  const { id } = peticion.params;
+  ModelEjemplar.update(peticion.body, { where: { id } })
+    .then(([filasAfectadas]) => {
+      if (filasAfectadas === 0) return respuesta.status(404).json({ mensaje: 'Ejemplar no encontrado o sin cambios' });
+      return ModelEjemplar.findByPk(id);
+    })
+    .then((ejemplarActualizado) => {
+      if (ejemplarActualizado) respuesta.status(200).json(ejemplarActualizado);
+    })
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al actualizar el ejemplar', error: error.message }));
 };
 
-// Eliminar un ejemplar
-export const remove = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const filasEliminadas = await ModelEjemplar.destroy({ where: { id } });
-
-    if (filasEliminadas === 0) {
-      return res.status(404).json({ message: 'Ejemplar no encontrado' });
-    }
-
-    res.status(200).json({ message: 'Ejemplar eliminado correctamente' });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error al eliminar el ejemplar',
-      error: error.message
-    });
-  }
+export const eliminar = (peticion, respuesta) => {
+  const { id } = peticion.params;
+  ModelEjemplar.destroy({ where: { id } })
+    .then((filasEliminadas) => {
+      if (filasEliminadas === 0) return respuesta.status(404).json({ mensaje: 'Ejemplar no encontrado' });
+      respuesta.status(200).json({ mensaje: 'Ejemplar eliminado correctamente' });
+    })
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al eliminar el ejemplar', error: error.message }));
 };

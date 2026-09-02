@@ -1,53 +1,46 @@
 import ModelIdioma from '../models/ModelIdioma.js';
 
-export const getAll = async (req, res) => {
-  try {
-    const idiomas = await ModelIdioma.findAll();
-    res.status(200).json(idiomas);
-  } catch (error) {
-    res.status(500).json({ message: 'Error al obtener los idiomas', error: error.message });
-  }
+export const obtenerTodos = (peticion, respuesta) => {
+  ModelIdioma.findAll()
+    .then((idiomas) => respuesta.status(200).json(idiomas))
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al obtener los idiomas', error: error.message }));
 };
 
-export const getById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const idioma = await ModelIdioma.findByPk(id);
-    if (!idioma) return res.status(404).json({ message: 'Idioma no encontrado' });
-    res.status(200).json(idioma);
-  } catch (error) {
-    res.status(500).json({ message: 'Error al buscar el idioma', error: error.message });
-  }
+export const obtenerPorId = (peticion, respuesta) => {
+  const { id } = peticion.params;
+  ModelIdioma.findByPk(id)
+    .then((idioma) => {
+      if (!idioma) return respuesta.status(404).json({ mensaje: 'Idioma no encontrado' });
+      respuesta.status(200).json(idioma);
+    })
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al buscar el idioma', error: error.message }));
 };
 
-export const create = async (req, res) => {
-  try {
-    const nuevoIdioma = await ModelIdioma.create(req.body);
-    res.status(201).json(nuevoIdioma);
-  } catch (error) {
-    res.status(400).json({ message: 'Error al crear el idioma', error: error.message });
-  }
+export const crear = (peticion, respuesta) => {
+  ModelIdioma.create(peticion.body)
+    .then((nuevoIdioma) => respuesta.status(201).json(nuevoIdioma))
+    .catch((error) => respuesta.status(400).json({ mensaje: 'Error al crear el idioma', error: error.message }));
 };
 
-export const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const [filasAfectadas] = await ModelIdioma.update(req.body, { where: { id } });
-    if (filasAfectadas === 0) return res.status(404).json({ message: 'Idioma no encontrado o sin cambios' });
-    const idiomaActualizado = await ModelIdioma.findByPk(id);
-    res.status(200).json(idiomaActualizado);
-  } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar el idioma', error: error.message });
-  }
+export const actualizar = (peticion, respuesta) => {
+  const { id } = peticion.params;
+  ModelIdioma.update(peticion.body, { where: { id } })
+    .then(([filasAfectadas]) => {
+      if (filasAfectadas === 0) return respuesta.status(404).json({ mensaje: 'Idioma no encontrado o sin cambios' });
+      return ModelIdioma.findByPk(id);
+    })
+    .then((idiomaActualizado) => {
+      if (idiomaActualizado) respuesta.status(200).json(idiomaActualizado);
+    })
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al actualizar el idioma', error: error.message }));
 };
 
-export const remove = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const filasEliminadas = await ModelIdioma.destroy({ where: { id } });
-    if (filasEliminadas === 0) return res.status(404).json({ message: 'Idioma no encontrado' });
-    res.status(200).json({ message: 'Idioma eliminado correctamente' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar el idioma', error: error.message });
-  }
+export const eliminar = (peticion, respuesta) => {
+  const { id } = peticion.params;
+  ModelIdioma.destroy({ where: { id } })
+    .then((filasEliminadas) => {
+      if (filasEliminadas === 0) return respuesta.status(404).json({ mensaje: 'Idioma no encontrado' });
+      respuesta.status(200).json({ mensaje: 'Idioma eliminado correctamente' });
+    })
+    .catch((error) => respuesta.status(500).json({ mensaje: 'Error al eliminar el idioma', error: error.message }));
 };
