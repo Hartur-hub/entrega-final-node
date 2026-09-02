@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize } from "sequelize";
+import { DataTypes } from "sequelize";
 import { conn } from "../config/database.js";
 
 export const ModelEstadoUsuario = conn.define("EstadoUsuario", {
